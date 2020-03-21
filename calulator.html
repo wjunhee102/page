@@ -102,7 +102,7 @@
                 </tr>
                 <tr>
                     <td colspan="2" class="num num0">0</td>
-                    <td class="num dot">.</td>
+                    <td class="dot">.</td>
                     <th class="res">=</th>
                 </tr>
             </tbody>
@@ -114,7 +114,8 @@
         const display = document.querySelector(".display");
 
         // 숫자 버튼
-        const num = document.querySelectorAll(".num");        
+        const num = document.querySelectorAll(".num");     
+        const dot = document.querySelector(".dot");
 
         // 변환 버튼
         const ac = document.querySelector(".ac");
@@ -142,6 +143,16 @@
             });
         }
 
+        const dotClick = (e)=> {
+            const value = Number(display.innerHTML);
+            const testValue = value.toFixed(0)
+
+            if(value/testValue !== 1 || display.innerHTML.slice(-1)[0] === ".") return ;
+
+            nowValue.push(e.target.innerHTML)
+            display.innerText = nowValue.join("")
+            ac.innerHTML = "C"
+        }
         // 숫자 변환
         const changeEvent = (e) => {
             const value = Number(display.innerHTML)
@@ -191,11 +202,12 @@
                     if(on) {
                         on.classList.remove("on");
                     }
-                    ele.classList.add("on")
-                    nowValue = []
                     if(!firstFactor) {
                         firstFactor = Number(display.innerHTML);
                     }
+                    ele.classList.add("on")
+                    nowValue = []
+                    
                 })
             })
         }
@@ -234,6 +246,7 @@
 
         const init = ()=> {
             numClick();
+            dot.addEventListener("click", dotClick);
             ac.addEventListener("click", reset);
             clickChage();
             changeOperator();
