@@ -187,6 +187,10 @@
             oper.forEach(ele => {
                 ele.addEventListener("click", ()=>{
                     operator = ele.classList[1];
+                    const on = document.querySelector(".on");
+                    if(on) {
+                        on.classList.remove("on");
+                    }
                     ele.classList.add("on")
                     nowValue = []
                     if(!firstFactor) {
