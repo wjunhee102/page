@@ -145,19 +145,21 @@
         // 숫자 변환
         const changeEvent = (e) => {
             const value = Number(display.innerHTML)
-
+            let displayValue
             switch(e.target.innerHTML){
                 case "+/-" :
-                firstFactor = -value
+                displayValue = -value
                 break;
+
                 case "%" :
-                firstFactor = value/100
+                displayValue = value/100
                 break;
+
                 default :
-                firstFactor = 0;
+                displayValue = 0;
             }
             nowValue = [];
-            display.innerText = firstFactor;
+            display.innerText = displayValue;
         }
 
         const clickChage = () => {
@@ -189,7 +191,6 @@
                     nowValue = []
                     if(!firstFactor) {
                         firstFactor = Number(display.innerHTML);
-                        display.innerHTML = 0;
                     }
                 })
             })
