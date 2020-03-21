@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>계산기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            color: rgba(234,234,234,1);
+        }
+        .inner {
+            margin: 0 auto;
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+        .calulator {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border-collapse: collapse;
+        }
+        tr, td {
+            border: 1px solid rgb(54, 54, 64);
+            border-collapse: collapse;
+        }
+        th {
+            line-height: 40px;
+            box-sizing: border-box;
+        }
+        td {
+            width: 50px;
+            line-height: 40px;
+            text-align: center;
+            box-sizing: border-box;
+            background-color: rgba(98,98, 103, 1);
+        }
+        td:active {
+            background-color: #888;
+        }
+        tbody tr {
+            background-color: rgba(54, 54, 64,1);
+        }
+        tbody tr th {
+            width: 50px;
+            background-color: rgba(236,163, 34, 1);
+        }
+        tbody tr:first-child td{
+            background-color: rgba(76, 79, 90, 1);
+        }
+        thead tr th {
+            background-color: rgba(76, 79, 90, 0.9);
+            padding-top: 20px;
+            line-height: 40px;
+            text-align: right;
+            font-size: 18px;
+        }
+        caption {
+            color: #000;
+        }
+        .oper.on {
+            background-color: rgb(255, 218, 154);
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <table class="calulator">
+            <caption>계산기</caption>
+            <thead><tr><th colspan="4" class="display">0</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td class="ac">AC</td>
+                    <td class="changeBtn p_m">+/-</td>
+                    <td class="changeBtn per">%</td>
+                    <th class="oper division">&#247;</th>
+                </tr>
+                <tr>
+                    <td class="num num7">7</td>
+                    <td class="num num8">8</td>
+                    <td class="num num9">9</td>
+                    <th class="oper multiply">X</th>
+                </tr>
+                <tr>
+                    <td class="num num4">4</td>
+                    <td class="num num5">5</td>
+                    <td class="num num6">6</td>
+                    <th class="oper minus">-</th>
+                </tr>
+                <tr>
+                    <td class="num num1">1</td>
+                    <td class="num num2">2</td>
+                    <td class="num num3">3</td>
+                    <th class="oper plus">+</th>
+                </tr>
+                <tr>
+                    <td colspan="2" class="num num0">0</td>
+                    <td class="num dot">.</td>
+                    <th class="res">=</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+
+        // 디스플레이
+        const display = document.querySelector(".display");
+
+        // 숫자 버튼
+        const num = document.querySelectorAll(".num");        
+
+        // 변환 버튼
+        const ac = document.querySelector(".ac");
+        const changeBtn = document.querySelectorAll(".changeBtn");
+        
+        //계산 버튼
+        const oper = document.querySelectorAll(".oper");
+        const res = document.querySelector(".res");
+
+        // 인자
+        let preValue = [];
+        let nowValue = [];
+        let firstFactor = 0;
+        let secondFactor = 0;
+        let operator = null;
+
+        //숫자 입력
+        const numClick = ()=> {
+            num.forEach((ele) => {
+                ele.addEventListener("click", ()=>{
+                    nowValue.push(ele.innerHTML)
+                    display.innerText = nowValue.join("")
+                    ac.innerHTML = "C"
+                })
+            });
+        }
+
+        // 숫자 변환
+        const changeEvent = (e) => {
+            const value = Number(display.innerHTML)
+
+            switch(e.target.innerHTML){
+                case "+/-" :
+                firstFactor = -value
+                break;
+                case "%" :
+                firstFactor = value/100
+                break;
+                default :
+                firstFactor = 0;
+            }
+            nowValue = [];
+            display.innerText = firstFactor;
+        }
+
+        const clickChage = () => {
+            changeBtn.forEach((ele)=>{
+                ele.addEventListener("click", changeEvent);
+            })
+        }
+
+        // 리셋
+        const reset = () => {
+            if(secondFactor) {
+                secondFactor = 0;
+                nowValue = [];
+                ac.innerHTML = 'C'
+                return display.innerHTML = 0
+            } 
+            firstFactor = 0;
+            nowValue = [];
+            ac.innerHTML = 'AC';
+            display.innerHTML = 0;
+        }
+
+        //계산 
+        const changeOperator = ()=>{
+            oper.forEach(ele => {
+                ele.addEventListener("click", ()=>{
+                    operator = ele.classList[1];
+                    ele.classList.add("on")
+                    nowValue = []
+                    if(!firstFactor) {
+                        firstFactor = Number(display.innerHTML);
+                        display.innerHTML = 0;
+                    }
+                })
+            })
+        }
+    
+        const calculation = ()=> {
+            console.log(firstFactor, operator);
+            let resValue;
+            secondFactor = Number(display.innerHTML);
+
+            switch (operator) {
+                case "plus" : 
+                resValue = firstFactor + secondFactor
+                break;
+                case "minus" : 
+                resValue = firstFactor - secondFactor
+                break;
+                case "multiply" :
+                resValue = firstFactor * secondFactor
+                break;
+                case "division" :
+                resValue = firstFactor / secondFactor
+                break;
+                default :
+                resValue = display.innerHTML
+            }
+            const on = document.querySelector(`.${operator}`)
+            if(on) {
+                on.classList.remove("on");
+            }
+            operator = null;
+            nowValue = [];
+            firstFactor = resValue;
+            secondFactor = 0;
+            display.innerHTML = firstFactor;
+            
+        };
+
+        const init = ()=> {
+            numClick();
+            ac.addEventListener("click", reset);
+            clickChage();
+            changeOperator();
+            res.addEventListener("click", calculation);
+        }
+        init();
+    </script>
+</body>
+</html>
